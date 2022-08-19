@@ -5,4 +5,7 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  purge: [],
+  darkMode: false, // or 'media' or 'class'
+  variants: {},
 }
