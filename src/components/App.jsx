@@ -2,8 +2,7 @@
 import React, { useReducer } from "react"
 import "../styles/index.scss"
 import ctx from "./../store/context"
-import Recipes from "./Recipes"
-
+import Hero from "./Hero"
 const init = {
   value: 5,
 }
@@ -19,12 +18,13 @@ const App = () => {
   return (
     <>
       <ctx.Provider value={{ counter: state, dispatch: dispatch }}>
-        <section className="hero"></section>
-        <main>
+        {/*  <section className="hero"></section> */}
+        <Hero></Hero>
+        <main className="block">
           <section>
             <h1>Oh Herro, React.</h1>
-            <button>Helo I m new button</button>
-            <Recipes />
+            <button className="button">Helo I m new button</button>
+            {/* <Recipes /> */}
           </section>
         </main>
       </ctx.Provider>
