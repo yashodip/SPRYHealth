@@ -1,33 +1,49 @@
-import React from "react"
-
+import React, { useContext } from "react"
+import weatherBanner from "./../images/weather-banner.png"
+import ctx from "./../store/weather-context"
 const Hero = () => {
+  const weatherCtx = useContext(ctx)
+  console.log("weatherCtx", weatherCtx)
   return (
-    <div className="block">
-      <nav className=" w-full py-6">
+    <div>
+      <nav className="border-2 border-red-500 w-full py-6">
         <ul className="flex items-center justify-around max-w-6xl mx-auto">
           <li>
-            <h1 className="text-black">SPRY Weather App</h1>
+            <h1>SPRY Weather App</h1>
           </li>
 
           <li>
-            <a href="" className="text-black px-6">
-              Home
-            </a>
-            <a href="" className="text-black px-6">
-              Search By City
-            </a>
-            <a href="" className="text-black px-6">
-              About
-            </a>
+            <span className="px-6">Home</span>
+            {weatherCtx.auth ? (
+              <span className="px-6">Search By City</span>
+            ) : (
+              <></>
+            )}
           </li>
 
           <li>
-            <a href="" className="text-black px-6">
-              Login
-            </a>
+            {!weatherCtx.auth && (
+              <button
+                className="btn btn-primary px-6"
+                onClick={weatherCtx.onLogin}
+              >
+                Login
+              </button>
+            )}
+            {weatherCtx.auth && (
+              <button
+                className="btn btn-primary px-6"
+                onClick={weatherCtx.onLogout}
+              >
+                Logout
+              </button>
+            )}
           </li>
         </ul>
       </nav>
+      <section className="hero">
+        <img src={weatherBanner} alt="houses on the water" className="w-full" />
+      </section>
     </div>
   )
 }

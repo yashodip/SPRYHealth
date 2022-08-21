@@ -1,7 +1,9 @@
 import React from "react"
 
 const init = {
-  value: 0,
+  auth: false,
+  onLogin: () => {},
+  onLogout: () => {},
 }
 
 const ctx = React.createContext(init)

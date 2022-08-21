@@ -1,33 +1,20 @@
 // No need to import "react" just for JSX in React 17+
-import React, { useReducer } from "react"
+import React, { useContext } from "react"
+import ctx from "../store/weather-context"
 import "../styles/index.scss"
-import ctx from "./../store/context"
 import Hero from "./Hero"
-const init = {
-  value: 5,
-}
-const reducer = (state, action) => {
-  if (action.type == "inc") return { value: state.value + 1 }
-  else {
-    return { value: 1001 }
-  }
-}
+import MainTable from "./MainTable"
 
 const App = () => {
-  const [state, dispatch] = useReducer(reducer, init)
+  const weatherCtx = useContext(ctx)
   return (
     <>
-      <ctx.Provider value={{ counter: state, dispatch: dispatch }}>
-        {/*  <section className="hero"></section> */}
-        <Hero></Hero>
-        <main className="block">
-          <section>
-            <h1>Oh Herro, React.</h1>
-            <button className="button">Helo I m new button</button>
-            {/* <Recipes /> */}
-          </section>
-        </main>
-      </ctx.Provider>
+      {/*  <section className="hero"></section> */}
+
+      <Hero></Hero>
+      <main className="block">
+        <MainTable></MainTable>
+      </main>
     </>
   )
 }

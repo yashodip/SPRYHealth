@@ -3,3 +3,15 @@
 @import "tailwindcss/utilities";
 
 @import "./../components/button";
+.hero img {
+  height: 25vh;
+}
+
+.heading-container {
+  height: 65vh;
+  top: -50px;
+}
+
+td {
+  @apply border-2;
+}
