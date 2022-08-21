@@ -1,28 +1,28 @@
-const path = require("path");
-const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path")
+const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const { CleanWebpackPlugin } = require("clean-webpack-plugin")
+const HtmlWebpackPlugin = require("html-webpack-plugin")
 
-let mode = "development";
-let target = "web";
+let mode = "development"
+let target = "web"
 const plugins = [
   new CleanWebpackPlugin(),
   new MiniCssExtractPlugin(),
   new HtmlWebpackPlugin({
     template: "./src/index.html",
   }),
-];
+]
 
 if (process.env.NODE_ENV === "production") {
-  mode = "production";
+  mode = "production"
   // Temporary workaround for 'browserslist' bug that is being patched in the near future
-  target = "browserslist";
+  target = "browserslist"
 }
 
 if (process.env.SERVE) {
   // We only want React Hot Reloading in serve mode
-  plugins.push(new ReactRefreshWebpackPlugin());
+  plugins.push(new ReactRefreshWebpackPlugin())
 }
 
 module.exports = {
@@ -31,7 +31,7 @@ module.exports = {
 
   // This is unnecessary in Webpack 5, because it's the default.
   // However, react-refresh-webpack-plugin can't find the entry without it.
-  entry: "./src/index.js",
+  entry: ["regenerator-runtime/runtime.js", "./src/index.js"],
 
   output: {
     // output path is required for `clean-webpack-plugin`
@@ -114,4 +114,4 @@ module.exports = {
     contentBase: "./dist",
     hot: true,
   },
-};
+}
