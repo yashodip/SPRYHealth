@@ -1,12 +1,27 @@
 import { useEffect, useReducer } from "react"
 import "regenerator-runtime/runtime"
+import { fetchAll, flatten } from "./../utils/utils"
 import ACTIONS from "./actions"
 import ctx from "./weather-context"
+
+let api_key = "31b12542256d12bfadd6c35e749b0177"
+
 const initReducer = {
   auth: false,
   country: "IN",
   weatherInfo: [],
-  cities: ["pune", "jaipur"],
+  cities: [
+    "Mumbai",
+    "Delhi",
+    "Bangalore",
+    "Varanasi",
+    "Ahmedabad",
+    "Chennai",
+    "Kolkata",
+    "Surat",
+    "Pune",
+    "Lucknow",
+  ],
   citiesInfo: [],
   loading: false,
   error: null,
@@ -25,25 +40,14 @@ const weatherReducer = (state, action) => {
       return { ...state, loading: false }
     case ACTIONS.ERROR:
       return { ...state, loading: false, error: payload }
-    case ACTIONS.UPDATE_INFO:
+    case ACTIONS.WEATHER_INFO:
       return { ...state, weatherInfo: payload }
     case ACTIONS.UPDATE_CITIES_INFO:
       let tempCitiesInfo = [...state.citiesInfo]
-      tempCitiesInfo.concat(...payload)
-      return { ...state, citiesInfo: tempCitiesInfo.concat(...payload) }
+      /* tempCitiesInfo.concat(payload) */
+      return { ...state, citiesInfo: tempCitiesInfo.concat(payload) }
   }
   return initReducer
-}
-
-function initFun(init) {
-  console.log("cities", init.cities)
-
-  /* const data = resp.json()
-  const citiesInIndia = data.filter((item) => item.country == "IN")
-  console.log("citiesInIndia", citiesInIndia)
-  //init.weatherInfo.push(...citiesInIndia)
-  console.log("reducer called ", cities, init) */
-  return init
 }
 
 const WeatherProvider = (props) => {
@@ -54,6 +58,54 @@ const WeatherProvider = (props) => {
   }
   const logoutHandler = () => {
     dispatch({ type: ACTIONS.LOGOUT })
+  }
+  async function initDataFetch() {
+    let cityUrls = weatherCtx.cities.map(
+      (city) =>
+        `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${api_key}`
+    )
+    dispatch({ type: ACTIONS.CALL_API })
+    fetchAll(cityUrls)
+      .then((results) => {
+        const final = results.map((itemCity) => {
+          console.log("inside of filter", itemCity)
+          return itemCity.filter((item) => item.country == "IN")
+        })
+        const flattened = flatten(final)
+        console.log("flatten", flattened)
+        dispatch({ type: ACTIONS.UPDATE_CITIES_INFO, payload: flattened })
+        console.log("results in fetchAll", final)
+      })
+      .catch((err) => console.log("Error", err))
+
+    dispatch({ type: ACTIONS.SUCCESS })
+    console.log("URLS", cityUrls)
+  }
+  async function fetchAllWeather() {
+    let weatherUrls = weatherCtx.citiesInfo.map(
+      (city) =>
+        `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${api_key}`
+    )
+    console.log("fetchWeather calledd", weatherUrls)
+    weatherUrls.length &&
+      fetchAll(weatherUrls)
+        .then((results) => {
+          console.log("results from weather", results)
+          const weatherInfo = results.map((item, index) => {
+            return {
+              icon: item.weather[0].icon,
+              description: item.weather[0].description,
+              temp: item.main.temp,
+              city: item.name,
+              w_state: weatherCtx.citiesInfo[index].state,
+              country: item.sys.country,
+              lat: item.coord.lat,
+              lon: item.coord.lon,
+            }
+          })
+          dispatch({ type: ACTIONS.WEATHER_INFO, payload: weatherInfo })
+        })
+        .catch((err) => console.log("Error", err))
   }
   const weatherCtx = {
     auth: state.auth,
@@ -67,35 +119,14 @@ const WeatherProvider = (props) => {
     onLogout: logoutHandler,
   }
 
-  async function initDataFetch() {
-    let api_key = "31b12542256d12bfadd6c35e749b0177"
-    let urls = state.cities.map(
-      (city) =>
-        `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${api_key}`
-    )
-    console.log("URLS", urls)
-    let url = `http://api.openweathermap.org/geo/1.0/direct?q=${state.cities[0]}&limit=5&appid=${api_key}`
-    dispatch({ type: ACTIONS.CALL_API })
-    return await fetch(url)
-      .then((resp) => resp.json())
-      .then((data) => {
-        dispatch({ type: ACTIONS.SUCCESS })
-        return data
-      })
-      .catch((err) => {
-        dispatch({ type: ACTIONS.ERROR, payload: err.message })
-      })
-  }
-
   useEffect(() => {
     console.log("hello useE")
-    initDataFetch().then((data) => {
-      console.log("hello fetch")
-
-      const citiesInIndia = data.filter((item) => item.country == "IN")
-      dispatch({ type: ACTIONS.UPDATE_CITIES_INFO, payload: citiesInIndia })
-    })
+    initDataFetch()
   }, [])
+  useEffect(() => {
+    fetchAllWeather()
+    console.log("fetch weather called")
+  }, [weatherCtx.citiesInfo])
 
   /* return (
     state.weatherInfo.length && (

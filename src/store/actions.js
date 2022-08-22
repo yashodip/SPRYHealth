@@ -4,7 +4,7 @@ const ACTIONS = {
   ERROR: "error",
   LOGIN: "login",
   LOGOUT: "logout",
-  UPDATE_INFO: "update-info",
+  WEATHER_INFO: "weather-info",
   UPDATE_CITIES_INFO: "update-cities-info",
 }
 
