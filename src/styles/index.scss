@@ -12,6 +12,18 @@
   top: -50px;
 }
 
+table {
+  @apply table-auto w-4/5 m-auto border-collapse border;
+}
+
 td {
-  @apply border-2;
+  @apply border-2 capitalize justify-center;
+}
+
+td img {
+  @apply flex justify-center;
+}
+
+td span {
+  @apply py-3;
 }

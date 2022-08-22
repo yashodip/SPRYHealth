@@ -95,7 +95,7 @@ const WeatherProvider = (props) => {
             return {
               icon: item.weather[0].icon,
               description: item.weather[0].description,
-              temp: item.main.temp,
+              temp: item.main.temp - 273.1,
               city: item.name,
               w_state: weatherCtx.citiesInfo[index].state,
               country: item.sys.country,
