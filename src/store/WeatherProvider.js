@@ -4,7 +4,7 @@ import { fetchAll, flatten } from "./../utils/utils"
 import ACTIONS from "./actions"
 import ctx from "./weather-context"
 
-let api_key = "31b12542256d12bfadd6c35e749b0177"
+let api_key = ""
 
 const initReducer = {
   auth: false,
