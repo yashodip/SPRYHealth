@@ -12,6 +12,10 @@
   top: -50px;
 }
 
+.center {
+  @apply flex justify-center;
+}
+
 table {
   @apply table-auto w-4/5 m-auto border-collapse border;
 }

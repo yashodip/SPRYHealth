@@ -22,6 +22,8 @@ const initReducer = {
     "Pune",
     "Lucknow",
   ],
+  city: "",
+  cityWeather: {},
   citiesInfo: [],
   loading: false,
   error: null,
@@ -46,6 +48,10 @@ const weatherReducer = (state, action) => {
       let tempCitiesInfo = [...state.citiesInfo]
       /* tempCitiesInfo.concat(payload) */
       return { ...state, citiesInfo: tempCitiesInfo.concat(payload) }
+    case ACTIONS.CITY:
+      return { ...state, city: payload }
+    case ACTIONS.CITY_WEATHER:
+      return { ...state, cityWeather: payload }
   }
   return initReducer
 }
@@ -107,16 +113,53 @@ const WeatherProvider = (props) => {
         })
         .catch((err) => console.log("Error", err))
   }
+  const fetchCityWeatherHandler = (city) => {
+    dispatch({ type: ACTIONS.CITY, payload: city })
+    fetch(
+      `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${api_key}`
+    )
+      .then((resp) => resp.json())
+      .then((mainData) => {
+        console.log("mainData", { mainData })
+        fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${mainData[0].lat}&lon=${mainData[0].lon}&appid=${api_key}`
+        )
+          .then((resp) => resp.json())
+          .then((data) => {
+            console.log(data, "city weather fetched")
+            const flatObj = {
+              icon: data.weather[0].icon,
+              description: data.weather[0].description,
+              temp: data.main.temp - 273.1,
+              city: data.name,
+              w_state: mainData[0].state,
+              country: data.sys.country,
+              lat: data.coord.lat,
+              lon: data.coord.lon,
+            }
+            dispatch({ type: ACTIONS.CITY_WEATHER, payload: flatObj })
+            console.log(flatObj, "cityweather")
+          })
+        /* const flattened = flatten(final)
+        console.log("flatten", flattened)
+        dispatch({ type: ACTIONS.UPDATE_CITIES_INFO, payload: flattened })
+        console.log("results in fetchAll", final) */
+      })
+      .catch((err) => console.log("Error", err))
+  }
   const weatherCtx = {
     auth: state.auth,
     country: state.country,
     weatherInfo: state.weatherInfo,
+    city: state.city,
+    cityWeather: state.cityWeather,
     cities: state.cities,
     citiesInfo: state.citiesInfo,
     loading: state.loading,
     error: state.error,
     onLogin: loginHandler,
     onLogout: logoutHandler,
+    fetchCityWeather: fetchCityWeatherHandler,
   }
 
   useEffect(() => {

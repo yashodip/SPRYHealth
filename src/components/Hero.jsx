@@ -1,4 +1,5 @@
 import React, { useContext } from "react"
+import { Link } from "react-router-dom"
 import weatherBanner from "./../images/weather-banner.png"
 import ctx from "./../store/weather-context"
 const Hero = () => {
@@ -13,9 +14,13 @@ const Hero = () => {
           </li>
 
           <li>
-            <span className="px-6">Home</span>
+            <span className="px-6">
+              <Link to="/home">Home</Link>
+            </span>
             {weatherCtx.auth ? (
-              <span className="px-6">Search By City</span>
+              <span className="px-6">
+                <Link to="/searchbycity">Search By City</Link>
+              </span>
             ) : (
               <></>
             )}

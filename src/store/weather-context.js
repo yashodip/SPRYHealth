@@ -8,8 +8,11 @@ const init = {
   citiesInfo: [],
   loading: false,
   error: null,
+  city: "",
+  cityWeather: {},
   onLogin: () => {},
   onLogout: () => {},
+  fetchCityWeather: (city) => {},
 }
 
 const ctx = React.createContext(init)
